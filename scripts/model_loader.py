@@ -6,8 +6,8 @@ from sklearn.externals import joblib
 
 def cargarModelo():
 
-    FILENAME_MODEL_TO_LOAD = "flowers_model_tl-full.h5"
-    MODEL_PATH = "../../../models/convnet"
+    FILENAME_MODEL_TO_LOAD = "covid19_model_full.h5"
+    MODEL_PATH = "../../../models"
 
     # Cargar la RNA desde disco
     loaded_model = load_model(MODEL_PATH + "/" + FILENAME_MODEL_TO_LOAD)
