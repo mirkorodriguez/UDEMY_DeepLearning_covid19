@@ -1,0 +1,164 @@
+﻿<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO 8859-1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Predictor de Abandono de Clientes</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.css">
+</head>
+
+<body ng-app="myApp" ng-cloak style="background-color: #efefef" ng-controller="myCtrl" layout="column">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <span>Predictor de abandono de clientes</span>
+    </div>
+  </md-toolbar>
+  <md-content flex style="width:420">
+    <md-card>
+      <md-card-content>
+        <p><em>Ingrese los datos del cliente:</em></p>
+       </md-card-content>
+    </md-card>
+    <md-card>
+      <md-card-content>
+
+        <div layout="row" layout-align="space-between center">
+          <span>Score crediticio</span>
+          <md-slider-container> {: data.scoreCrediticio :}&nbsp;
+            <md-slider aria-label="Slider" min="350" max="850" ng-model="data.scoreCrediticio" id="age-slider"></md-slider>
+          </md-slider-container>
+        </div>
+
+        <div layout="row" layout-align="space-between center">
+          <span>País</span>
+          <md-select ng-model="data.pais" placeholder="Select">
+            <md-option value="France">France</md-option>
+            <md-option value="Germany">Germany</md-option>
+            <md-option value="Spain">Spain</md-option>
+          </md-select>
+        </div>
+
+        <div style="margin-bottom:32px" layout="row" layout-align="space-between center">
+          <span>Género</span>
+          <md-radio-group ng-model="data.genero" layout="row">
+            <md-radio-button value="Male">Male</md-radio-button>
+            <md-radio-button value="Female">Female</md-radio-button>
+          </md-radio-group>
+        </div>
+
+        <div layout="row" layout-align="space-between center">
+          <span>Edad</span>
+          <md-slider-container> {: data.edad :}&nbsp;
+            <md-slider aria-label="Slider" min="18" max="92" ng-model="data.edad" id="age-slider"></md-slider>
+          </md-slider-container>
+        </div>
+
+        <div layout="row" layout-align="space-between center">
+          <span>Tenencia</span>
+          <md-slider-container> {: data.tenencia :}&nbsp;
+            <md-slider aria-label="Slider" min="0" max="10" ng-model="data.tenencia" id="age-slider"></md-slider>
+          </md-slider-container>
+        </div>
+
+        <div layout="row" layout-align="space-between center">
+          <span>Balance</span>
+          <input type="number" ng-model="data.balance"></input>
+        </div>
+
+        <div style="margin-bottom:32px" layout="row" layout-align="space-between center">
+          <span>Número de productos</span>
+          <md-select ng-model="data.numDeProductos" placeholder="Select">
+            <md-option value="0">0</md-option>
+            <md-option value="1">1</md-option>
+            <md-option value="2">2</md-option>
+            <md-option value="3">3</md-option>
+            <md-option value="4">4</md-option>
+          </md-select>
+        </div>
+
+        <div style="margin-bottom:32px" layout="row" layout-align="space-between center">
+          <span>¿Tiene Tarjeta de Crédito?</span>
+          <md-radio-group ng-model="data.tieneTarjetaCredito" layout="row">
+            <md-radio-button value="1">Sí</md-radio-button>
+            <md-radio-button value="0">No</md-radio-button>
+          </md-radio-group>
+        </div>
+
+        <div style="margin-bottom:32px" layout="row" layout-align="space-between center">
+          <span>¿Es miembro activo?</span>
+          <md-radio-group ng-model="data.esMiembroActivo" layout="row">
+            <md-radio-button value="1">Sí</md-radio-button>
+            <md-radio-button value="0">No</md-radio-button>
+          </md-radio-group>
+        </div>
+
+        <div layout="row" layout-align="space-between center">
+          <span>Salario anual</span>
+          <input type="number" ng-model="data.salarioEstimado"></input>
+        </div>
+
+      </md-card-content>
+
+      <md-card-actions layout="row" layout-align="end center">
+        <md-button ng-click="submit()" class="md-accent md-raised">Predecir</md-button>
+      </md-card-actions>
+
+    </md-card>
+    <md-card>
+      <md-card-content>
+        <div layout="row" layout-align="space-between center">
+          <span style="font-weight:bold">Predicción:</span>
+          <span style="color:blue;font-weight:bold">{: result :}</span>
+        </div>
+      </md-card-content>
+    </md-card>
+  </md-content>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
+
+  <script>
+    var app = angular.module('myApp', ['ngMaterial']);
+    app.config(['$interpolateProvider', function($interpolateProvider) {
+      $interpolateProvider.startSymbol('{:');
+      $interpolateProvider.endSymbol(':}');
+    }]);
+
+    app.config(function($mdThemingProvider) {
+      $mdThemingProvider.theme('default')
+        .primaryPalette('blue-grey')
+        .accentPalette('orange');
+    });
+
+    app.controller('myCtrl', ['$scope', '$http',
+      function($scope, $http) {
+        $scope.data = {};
+
+        $scope.submit = function() {
+          console.log($scope.data)
+          $scope.result = "Wait...";
+
+          $http({
+            method : 'POST',
+            url : 'http://3.133.13.34:5000/abandono/cliente/',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: $scope.data
+          }).success(function(data, status, headers, config) {
+            $scope.result = data;
+
+          }).error(function(data, status, headers, config) {
+            $scope.result = 'Error';
+
+          });
+
+        }
+      }
+    ]);
+  </script>
+</body>
+</html>
