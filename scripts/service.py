@@ -14,7 +14,7 @@ import os
 from werkzeug.utils import secure_filename
 from model_loader import cargarModelo
 
-UPLOAD_FOLDER = '../../../samples/images/uploads'
+UPLOAD_FOLDER = '../images/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 port = int(os.getenv('PORT', 5000))
@@ -30,13 +30,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #Define a route
 @app.route('/')
 def main_page():
-	return 'Modelo desplegado en la Nube!'
+	return 'Servicio REST activo!'
 
-@app.route('/flores/', methods=['GET','POST'])
-def churn():
-	return 'Modelo de Reconocimiento de flores!'
-
-@app.route('/flores/flor/', methods=['GET','POST'])
+@app.route('/model/covid19/', methods=['GET','POST'])
 def default():
     data = {"success": False}
     if request.method == "POST":
@@ -55,22 +51,25 @@ def default():
             filename = UPLOAD_FOLDER + '/' + filename
             print("\nfilename:",filename)
 
-            img = image.img_to_array(image.load_img(filename, target_size=(224, 224)))
+            image_to_predict = image.load_img(filename, target_size=(224, 224))
+            test_image = image.img_to_array(image_to_predict)
             test_image = np.expand_dims(test_image, axis = 0)
             test_image = test_image.astype('float32')
             test_image /= 255
 
             with graph.as_default():
-            	result = loaded_model.predict(test_image)[0]
+            	result = loaded_model.predict(test_image)[0][0]
             	# print(result)
-            	index = np.argmax(result)
-            	CLASSES = ['Daisy', 'Dandelion', 'Rosa', 'Girasol', 'Tulipán']
+            	
+		# Resultados
+                prediction = 1 if (result >= 0.5) else 0
+                CLASSES = ['Normal', 'Covid19+']
 
-            	ClassPred = CLASSES[index]
-            	ClassProb = result[index]
-
-            	print("Pedicción:", ClassPred)
-            	print("Prob:", ClassProb)
+                ClassPred = CLASSES[prediction]
+                ClassProb = result
+            	
+		print("Pedicción:", ClassPred)
+		print("Prob: {:.2%}".format(ClassProb))
 
             	#Results as Json
             	data["predictions"] = []
