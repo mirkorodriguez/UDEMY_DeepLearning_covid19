@@ -30,7 +30,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #Define a route
 @app.route('/')
 def main_page():
-	return 'Servicio REST activo!'
+	return '¡Servicio REST activo!'
 
 @app.route('/model/covid19/', methods=['GET','POST'])
 def default():
@@ -62,14 +62,14 @@ def default():
             	# print(result)
             	
 		# Resultados
-                prediction = 1 if (result >= 0.5) else 0
-                CLASSES = ['Normal', 'Covid19+']
+            	prediction = 1 if (result >= 0.5) else 0
+            	CLASSES = ['Normal', 'Covid19+']
 
-                ClassPred = CLASSES[prediction]
-                ClassProb = result
+            	ClassPred = CLASSES[prediction]
+            	ClassProb = result
             	
-		print("Pedicción:", ClassPred)
-		print("Prob: {:.2%}".format(ClassProb))
+            	print("Pedicción:", ClassPred)
+            	print("Prob: {:.2%}".format(ClassProb))
 
             	#Results as Json
             	data["predictions"] = []
