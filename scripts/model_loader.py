@@ -1,9 +1,8 @@
-# -----------------------------------------------------------
+# ------------------------
 # Cargando modelo de disco
+# ------------------------
 import tensorflow as tf
 from keras.models import load_model
-#from sklearn.externals import joblib
-import joblib
 
 def cargarModelo():
 

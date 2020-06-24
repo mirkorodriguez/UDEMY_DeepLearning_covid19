@@ -2,9 +2,10 @@
 #Import Flask
 from flask import Flask, request, jsonify, redirect
 from flask_cors import CORS
+
 #Import Keras
 from keras.preprocessing import image
-from keras.applications.imagenet_utils import decode_predictions
+
 #Import python files
 import numpy as np
 
@@ -26,6 +27,9 @@ CORS(app)
 global loaded_model, graph
 loaded_model, graph = cargarModelo()
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 #Define a route
 @app.route('/')
@@ -82,4 +86,4 @@ def default():
     return jsonify(data)
 
 # Run de application
-app.run(host='0.0.0.0',port=port)
+app.run(host='0.0.0.0',port=port, threaded=False)
